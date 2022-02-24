@@ -11966,7 +11966,9 @@ fieldset:disabled .btn {
   .order-xxl-last {
     order: 6 !important;
   }
-
+  .m-xxl-auto {
+    margin: 0 auto;
+  }
   .m-xxl-0 {
     margin: 0 !important;
   }
@@ -12642,4 +12644,18 @@ fieldset:disabled .btn {
 }
 .dropdown:hover .dropbtn {
   background-color: #3e8e41;
+}
+.box {
+  box-sizing: content-box;
+  width: 700px;
+  height: 400px;
+  margin: 10px;
+  border-radius: 15px 15px 15px 0;
+  border: 3px solid #ffad5b;
+  padding: 0.5em 0.6em;
+  color: black;
+}
+.font-pa {
+  font-size: 20px;
+  font-weight: 20;
 }
