@@ -26,7 +26,6 @@
         float: bottom;
       }
     </style>
-    <script src="../static/js/sell.js"></script>
   </head>
   <body>
     <!-- Responsive navbar-->
@@ -86,7 +85,11 @@
       <div class="container px-lg-5">
         <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
           <div class="m-4 m-lg-5">
-            <h1 class="display-5 fw-bold">매도</h1>
+            {% if checkcode == 1%}
+            <h1 class="display-5 fw-bold">매도 성공!</h1>
+            {% else %}
+            <h1 class="display-5 fw-bold">매도 실패!</h1>
+            {% endif %}
           </div>
         </div>
       </div>

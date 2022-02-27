@@ -7,12 +7,12 @@ from basic import db_connect,only_code_made, time_format
 from inquiry import stock_inquiry, rate_import
 import portfolio as p
 import logging
- 
+
+
 logging.basicConfig(filename = "./logs/test.log", level = logging.DEBUG)
 COSPI,KOSDAQ = db_connect()
 nowDATE = time_format()
 app = Flask("Finance Portfolio")
-
 
 
 #대표 화면
@@ -74,12 +74,16 @@ def stock_return():
 def portfolioBuy():
     return render_template("portfolioBuy.html")
 
-#매수 완료
+#매수 완료 처리
 @app.route("/portfolio/buy_return")
 def portfolioBuy_return():
     get_buycollect = p.buy_open()
     name = request.args.get('name')
-    check = None
+    path="/nomadcoders/boot/DB/check.txt"
+    file = open(path, 'a')
+    global checkCode
+    checkCode="0"
+
     if name in COSPI or KOSDAQ:
         code = only_code_made(COSPI, KOSDAQ, name)
         price = request.args.get('price')
@@ -88,28 +92,54 @@ def portfolioBuy_return():
         if(name in get_buycollect):
             #매수한 경우 원래 값 수정
             p.buy_correct(name, price, number, get_buycollect)
-            check = 1
+            checkCode ="1"
         else:
             #새로 저장
-            p.buy_save(name, price, number)
-            check = 2
+            if(code):
+                p.buy_save(name, price, number)
+                checkCode ="2"
+            else:
+                checkCode="3"
     else:
-        return redirect("/")
-    return render_template("portfolioBuy_return.html",check=check)
+        return redirect("/portfolio")
+    file.write(checkCode)
+    file.close()
+    return render_template("portfolioBuy_return.html")
+
+
+#종목 매수 완료
+@app.route("/portfolio/buyreturn")
+def BuyReturn():
+    try:
+        path="/nomadcoders/boot/DB/check.txt"
+        file = open(path, 'r')
+        Check=int(file.read())
+        file.close()
+        file2 = open(path, 'w')
+        file2.close()
+        if(Check!=0):
+            pass
+        else:
+            return redirect("/portfolio")
+    except:
+        return redirect("/portfolio")
+    return render_template("portfolioBuyReturn.html",check=Check)
 
 #종목 매도 정보 입력
 @app.route("/portfolio/sell")
 def portfolioSell():
     return render_template("portfolioSell.html")
 
-#종목 매도 완료
+#종목 매도 처리
 @app.route("/portfolio/sell_return")
 def portfolioSell_return():
     buycollect = p.buy_open()
     sellname = request.args.get('name2')
     sellprice = request.args.get('price2')
     sellnumber = request.args.get('number2')
-    check = 0
+    check = "0"
+    path="/nomadcoders/boot/DB/check.txt"
+    file = open(path, 'a')
     if sellname in COSPI or KOSDAQ:
         for i in range(0,len(buycollect)):
             if(buycollect[i] == sellname):
@@ -128,15 +158,37 @@ def portfolioSell_return():
             p.sell_save(sellname, sellprice, sellnumber)
             #수익률 정보 저장
             p.profit_and_loss(sellname, saveprice, sellprice, remainprice, sellnumber)
-            check =1
+            check ="1"
         #매도량이 매수량을 넘음
         else:
             #추가되어서 넘친 매도량 삭제
             p.stock_item_correct(sellname)
+            check="2"
             print("알림 : <매도 수량을 다시입력해주세요>")
     else:
         return redirect("/")
-    return render_template("portfolioSell_return.html",checkcode = check)
+    file.write(check)
+    file.close()
+    return render_template("portfolioSell_return.html")
+
+#종목 매도 완료
+@app.route("/portfolio/sellreturn")
+def portfolioSellReturn():
+    try:
+        path="/nomadcoders/boot/DB/check.txt"
+        file = open(path, 'r')
+        Check=int(file.read())
+        file.close()
+        file2 = open(path, 'w')
+        file2.close()
+        print(Check)
+        if(Check!=0):
+            pass
+        else:
+            return redirect("/portfolio")
+    except:
+        return redirect("/portfolio")
+    return render_template("portfolioSellReturn.html",checkcode = Check)
 
 #포트폴리오 출력
 @app.route("/portfolio/inquiry")
@@ -265,4 +317,4 @@ def portfolioInit_return():
     return render_template("/portfolioInit_return.html",initialize=initialize)
 
 
-app.run(host="0.0.0.0", debug=True); 
+app.run(host="0.0.0.0", debug=True)
