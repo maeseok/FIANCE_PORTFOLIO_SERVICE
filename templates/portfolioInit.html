@@ -26,6 +26,12 @@
         float: bottom;
       }
     </style>
+    <script
+    src="https://code.jquery.com/jquery-3.6.0.js"
+    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"
+  ></script>
+    <script src="../static/js/focus.js"></script>
   </head>
   <body>
     <!-- Responsive navbar-->
@@ -88,7 +94,9 @@
             <h1 class="display-12 fw-bold">포트폴리오를 초기화하려면 "초기화"라고 입력해주세요</h1>
             <form action="/portfolio/init_return" method="get">
                 <br />
-                <input type="text" name="initialize" class="btn btn-lg btn-info mb-3 me-md-3" required/>
+                <input type="text" id="stock-input" 
+                name="initialize" class="btn btn-lg btn-info mb-3 me-md-3" placeholder="초기화"
+                required/>
                 <br />
                 <input
                   type="submit"
